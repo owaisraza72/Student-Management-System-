@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Post App</title>
+    <title>Signup - Post App</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
-    <div class="login-container">
-        <h2>Welcome Back</h2>
-        <form id="loginForm">
-            <input type="email" id="loginemail" placeholder="Email" required />
-            <input type="password" id="loginpassword" placeholder="Password" required />
-            <button type="submit">Login</button>
+    <div class="signup-container">
+        <h2>Create Your Account</h2>
+        <form id="signupForm">
+            <input type="text" id="username" placeholder="Username" required />
+            <input type="email" id="email" placeholder="Email" required />
+            <input type="password" id="password" placeholder="Password" required />
+            <button type="submit">Sign Up</button>
         </form>
         <div class="divider">or</div>
         <button id="facebookBtn" class="social-login-btn">
@@ -23,7 +26,7 @@
         <button id="googleBtn" class="social-login-btn">
             <i class="fab fa-google"></i> Continue with Google
         </button>
-        <p class="mt-2">Don't have an account? <a href="signup.html">Sign Up</a></p>
+        <p class="mt-2">Already have an account? <a href="index.html">Login</a></p>
     </div>
 
     <div id="loader" class="loader-overlay" style="display: none;">
@@ -33,4 +36,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
