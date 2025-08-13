@@ -1,36 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Post App</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Registration Form</title>
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-    <div class="login-container">
-        <h2>Welcome Back</h2>
-        <form id="loginForm">
-            <input type="email" id="loginemail" placeholder="Email" required />
-            <input type="password" id="loginpassword" placeholder="Password" required />
-            <button type="submit">Login</button>
-        </form>
-        <div class="divider">or</div>
-        <button id="facebookBtn" class="social-login-btn">
-            <i class="fab fa-facebook-f"></i> Continue with Facebook
-        </button>
-        <button id="googleBtn" class="social-login-btn">
-            <i class="fab fa-google"></i> Continue with Google
-        </button>
-        <p class="mt-2">Don't have an account? <a href="signup.html">Sign Up</a></p>
-    </div>
 
-    <div id="loader" class="loader-overlay" style="display: none;">
-        <div class="spinner"></div>
+<body>
+    <div class="form-container">
+        <h2>📝 Student Registration</h2>
+        <form id="studentForm">
+            <label for="name">👤 Full Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required />
+
+            <label for="email">📧 Email</label>
+            <input type="email" id="email" placeholder="example@gmail.com" required />
+
+            <label for="courses">💻 Courses</label>
+            <select id="courses" required>
+                <option value="" disabled selected>Select Course</option>
+                <option>Web Development</option>
+                <option>Graphic Designing</option>
+                <option>Artificial Intelligence</option>
+            </select>
+
+            <label for="age">🎂 Age</label>
+            <input type="number" id="age" placeholder="Enter your age" maxlength="3" required />
+
+            <label for="gender">⚧️ Gender</label>
+            <select id="gender" required>
+                <option value="" disabled selected>Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+
+            <label for="roll_num">🎓 Roll Number</label>
+            <input type="number" id="roll_num" placeholder="e.g. 456" maxlength="3" required />
+
+            <label for="contact">📱Contact</label>
+            <input type="number" id="contact" placeholder="e.g. 03001234567" max="11" required />
+
+            <button type="submit" id="submit">🚀 Submit</button>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
