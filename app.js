@@ -12,8 +12,8 @@ let studentForm = document.getElementById("studentForm");
 let dashboard = document.getElementById("showData");
 
 
-        const inputStd = document.getElementById('stdInput');
-        const checkStd = document.getElementById('student_btn');
+const inputStd = document.getElementById('stdInput');
+const checkStd = document.getElementById('student_btn');
 
 
 // ========================== Student Form Submit ==========================
@@ -59,13 +59,13 @@ if (studentForm) {
       Swal.fire("Success", "Data successfully submitted!", "success");
     }
 
-    full_name.value=""
-      email.value=""
-      courses.value=""
-      age.value=""
-      gender.value=""
-      cnic.value=""
-      contact.value=""
+    full_name.value = ""
+    email.value = ""
+    courses.value = ""
+    age.value = ""
+    gender.value = ""
+    cnic.value = ""
+    contact.value = ""
   });
 }
 
@@ -147,23 +147,22 @@ async function statusVa(statusValue, std_id) {
   Swal.fire("Updated!", "Student status has been updated.", "success");
 }
 
-async function checkStudentData(){
+async function checkStudentData() {
 
-window.location.href="checkstd.html"
+  window.location.href = "checkstd.html"
 
 }
 
-          document.addEventListener("DOMContentLoaded", function() {
-    const client = supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_KEY');
-    const checkStd = document.getElementById("student_btn");
-    const inputStd = document.getElementById("stdInput");
-    const showStatus = document.getElementById("showStatus");
+document.addEventListener("DOMContentLoaded", function () {
+  const checkStd = document.getElementById("student_btn");
+  const inputStd = document.getElementById("stdInput");
+  const showStatus = document.getElementById("showStatus");
 
 
-    if(checkStd) {
-        checkStd.addEventListener("click", async () => {
-            // Show loading state
-            showStatus.innerHTML = `
+  if (checkStd) {
+    checkStd.addEventListener("click", async () => {
+      // Show loading state
+      showStatus.innerHTML = `
                 <div class="status-header">
                     <svg class="status-icon" viewBox="0 0 24 24" fill="#4285f4">
                         <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
@@ -172,20 +171,20 @@ window.location.href="checkstd.html"
                 </div>
                 <div class="status-content">Fetching student data, please wait.</div>
             `;
-            showStatus.classList.add("show");
+      showStatus.classList.add("show");
 
-            try {
-                const { data, error } = await client
-                    .from('student_form')
-                    .select("*")
-                    .eq('cnic', inputStd.value);
+      try {
+        const { data, error } = await client
+          .from('student_form')
+          .select("*")
+          .eq('cnic', inputStd.value);
 
-                if(error) {
-                    throw error;
-                }
+        if (error) {
+          throw error;
+        }
 
-                if(!data || data.length === 0) {
-                    showStatus.innerHTML = `
+        if (!data || data.length === 0) {
+          showStatus.innerHTML = `
                         <div class="status-header">
                             <svg class="status-icon" viewBox="0 0 24 24" fill="#FF5722">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
@@ -194,12 +193,12 @@ window.location.href="checkstd.html"
                         </div>
                         <div class="status-content">No student found with CNIC: ${inputStd.value}</div>
                     `;
-                    return;
-                }
+          return;
+        }
 
-                const { full_name, email, courses, age, cnic, status } = data[0];
+        const { full_name, email, courses, age, cnic, status } = data[0];
 
-                showStatus.innerHTML = `
+        showStatus.innerHTML = `
                     <div class="status-header">
                         <svg class="status-icon" viewBox="0 0 24 24" fill="#4CAF50">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -219,10 +218,7 @@ window.location.href="checkstd.html"
                             <span class="info-label">Courses:</span>
                             <span class="info-value">${courses}</span>
                         </div>
-                        <div class="info-row">
-                            <span class="info-label">Age:</span>
-                            <span class="info-value">${age}</span>
-                        </div>
+                       
                         <div class="info-row">
                             <span class="info-label">CNIC:</span>
                             <span class="info-value">${cnic}</span>
@@ -234,9 +230,9 @@ window.location.href="checkstd.html"
                     </div>
                 `;
 
-            } catch (error) {
-                console.error("Error:", error.message);
-                showStatus.innerHTML = `
+      } catch (error) {
+        console.error("Error:", error.message);
+        showStatus.innerHTML = `
                     <div class="status-header">
                         <svg class="status-icon" viewBox="0 0 24 24" fill="#FF5722">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
@@ -245,9 +241,9 @@ window.location.href="checkstd.html"
                     </div>
                     <div class="status-content">${error.message || 'An error occurred while fetching student data'}</div>
                 `;
-            }
-        });
-    }
+      }
+    });
+  }
 });
 
 
