@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Status Checker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        input:focus {
+            border-color: #4285f4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+        }
+        
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .status-container {
+            margin-top: 1.5rem;
+            transition: all 0.4s ease;
+        }
+        
+        .status-card {
+            padding: 1.25rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4285f4;
+            font-size: 1rem;
+            text-align: left;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .status-card.show {
+            opacity: 1;
+            height: auto;
+            padding: 1.25rem;
+            margin-top: 0;
+        }
+        
+        .status-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+        }
+        
+        .status-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .status-content {
+            color: #34495e;
+            line-height: 1.5;
+        }
+        
+        .instructions {
+            color: #7f8c8d;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .info-row {
+    display: flex;
+    margin-bottom: 0.75rem;
+    align-items: center;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 80px;
+    margin-right: 1rem;
+}
+
+.info-value {
+    color: #34495e;
+    flex-grow: 1;
+}
+
+.status-active {
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+.status-inactive {
+    color: #FF5722;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #FFC107;
+    font-weight: 600;
+}
+
+/* Loading animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.status-icon.loading {
+    animation: spin 1s linear infinite;
+}
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Status Checker</h2>
+        <div class="input-group">
+            <input type="text" id="stdInput" placeholder="Enter student ID or name...">
+            <button id="student_btn">Check Status</button>
+        </div>
+        
+        <div class="status-container">
+            <div id="showStatus" class="status-card">
+                <div class="status-header">
+                    <svg class="status-icon" viewBox="0 0 24 24" fill="#4285f4">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm0-14h2v10h-2V3z"/>
+                    </svg>
+                    <div class="status-title">Student Status</div>
+                </div>
+                <div class="status-content">Enter a student ID and click "Check Status" to view information.</div>
+            </div>
+        </div>
+        
+        <p class="instructions">Enter the student's ID or name in the field above and click the button to check their current status and information.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+    <script>
+        // Basic functionality to show the status card
+        document.getElementById('student_btn').addEventListener('click', function() {
+            const statusCard = document.getElementById('showStatus');
+            const inputValue = document.getElementById('stdInput').value;
+            
+            if (inputValue.trim() !== '') {
+                statusCard.querySelector('.status-content').textContent = `Checking status for: ${inputValue}`;
+                statusCard.classList.add('show');
+            } else {
+                statusCard.querySelector('.status-content').textContent = 'Please enter a student ID or name';
+                statusCard.classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html>   

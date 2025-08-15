@@ -5,51 +5,293 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Registration Form</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+
+        h2 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label i {
+            width: 20px;
+            color: #3498db;
+        }
+
+        input,
+        select {
+            padding: 14px 15px 14px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        input::placeholder {
+            color: #95a5a6;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 69%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
+    <button class="checkResult" onclick="checkStudentData   ()">Check Result</button>
+
     <div class="form-container">
-        <h2>📝 Student Registration</h2>
+        <h2><i class="fas fa-user-graduate"></i> Student Registration</h2>
         <form id="studentForm">
-            <label for="name">👤 Full Name</label>
-            <input type="text" id="name" placeholder="Enter your full name" required />
+            <div class="input-wrapper">
+                <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" placeholder="Enter your full name" required />
+                <div class="error-message" id="name-error">Please enter a valid name</div>
+            </div>
 
-            <label for="email">📧 Email</label>
-            <input type="email" id="email" placeholder="example@gmail.com" required />
+            <div class="input-wrapper">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="example@gmail.com" required />
+                <div class="error-message" id="email-error">Please enter a valid email address</div>
+            </div>
 
-            <label for="courses">💻 Courses</label>
-            <select id="courses" required>
-                <option value="" disabled selected>Select Course</option>
-                <option>Web Development</option>
-                <option>Graphic Designing</option>
-                <option>Artificial Intelligence</option>
-            </select>
+            <div class="input-wrapper">
+                <label for="courses"><i class="fas fa-laptop-code"></i> Courses</label>
+                <i class="fas fa-laptop-code"></i>
+                <select id="courses" required>
+                    <option value="" disabled selected>Select Course</option>
+                    <option>Web Development</option>
+                    <option>Graphic Designing</option>
+                    <option>Artificial Intelligence</option>
+                </select>
+                <div class="error-message" id="course-error">Please select a course</div>
+            </div>
 
-            <label for="age">🎂 Age</label>
-            <input type="number" id="age" placeholder="Enter your age" maxlength="3" required />
+            <div class="input-wrapper">
+                <label for="age"><i class="fas fa-birthday-cake"></i> Age</label>
+                <i class="fas fa-birthday-cake"></i>
+                <input type="number" id="age" placeholder="Enter your age" min="12" max="60" required />
+                <div class="error-message" id="age-error">Age must be between 12 and 60</div>
+            </div>
 
-            <label for="gender">⚧️ Gender</label>
-            <select id="gender" required>
-                <option value="" disabled selected>Select</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-            </select>
+            <div class="input-wrapper">
+                <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                <i class="fas fa-venus-mars"></i>
+                <select id="gender" required>
+                    <option value="" disabled selected>Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+                <div class="error-message" id="gender-error">Please select your gender</div>
+            </div>
 
-            <label for="roll_num">🎓 Roll Number</label>
-            <input type="number" id="roll_num" placeholder="e.g. 456" maxlength="3" required />
+            <div class="input-wrapper">
+                <label for="cnic"><i class="fas fa-id-card"></i> CNIC No</label>
+                <i class="fas fa-id-card"></i>
+                <input type="text" id="cnic" placeholder="e.g. 42101-1234567-8" required />
+                <!-- pattern="[0-9]{5}-[0-9]{7}-[0-9]{1}" -->
+                <div class="error-message" id="cnic-error">Please enter CNIC in format: 12345-1234567-1</div>
+            </div>
 
-            <label for="contact">📱Contact</label>
-            <input type="number" id="contact" placeholder="e.g. 03001234567" max="11" required />
+            <div class="input-wrapper">
+                <label for="contact"><i class="fas fa-mobile-alt"></i> Contact</label>
+                <i class="fas fa-mobile-alt"></i>
+                <input type="tel" id="contact" placeholder="e.g. 03001234567" pattern="03[0-9]{9}" required />
+                <div class="error-message" id="contact-error">Please enter a valid 11-digit phone number starting with 03</div>
+            </div>
 
-            <button type="submit" id="submit">🚀 Submit</button>
+            <button type="submit" id="submit"><i class="fas fa-paper-plane"></i> Submit</button>
         </form>
+        
     </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="app.js"></script>
+    <script src="app.js">
+        // document.getElementById('studentForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+            
+        //     // Reset error messages
+        //     const errorMessages = document.querySelectorAll('.error-message');
+        //     errorMessages.forEach(msg => msg.style.display = 'none');
+            
+        //     // Validate form
+        //     let isValid = true;
+            
+        //     // CNIC Validation
+        //     const cnic = document.getElementById('cnic');
+        //     const cnicPattern = /^[0-9]{5}-[0-9]{7}-[0-9]{1}$/;
+        //     if (!cnicPattern.test(cnic.value)) {
+        //         document.getElementById('cnic-error').style.display = 'block';
+        //         isValid = false;
+        //     }
+            
+        //     // Phone Validation
+        //     const phone = document.getElementById('contact');
+        //     const phonePattern = /^03[0-9]{9}$/;
+        //     if (!phonePattern.test(phone.value)) {
+        //         document.getElementById('contact-error').style.display = 'block';
+        //         isValid = false;
+        //     }
+            
+        //     // Age Validation
+        //     const age = document.getElementById('age');
+        //     if (age.value < 12 || age.value > 60) {
+        //         document.getElementById('age-error').style.display = 'block';
+        //         isValid = false;
+        //     }
+            
+        //     // If form is valid, show success message
+        //     if (isValid) {
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: 'Registration Successful!',
+        //             text: 'Your student registration has been submitted.',
+        //             confirmButtonColor: '#3498db'
+        //         });
+        //         // Here you can add code to submit to Supabase
+        //         // For example: supabase.from('students').insert(formData)
+        //     }
+        // });
+
+        // // Real-time validation for CNIC
+        // document.getElementById('cnic').addEventListener('input', function(e) {
+        //     // Auto-format CNIC as user types
+        //     let value = e.target.value.replace(/\D/g, '');
+        //     if (value.length > 5) {
+        //         value = value.substring(0, 5) + '-' + value.substring(5);
+        //     }
+        //     if (value.length > 13) {
+        //         value = value.substring(0, 13) + '-' + value.substring(13, 14);
+        //     }
+        //     e.target.value = value.substring(0, 15);
+        // });
+
+        // // Real-time validation for phone
+        // document.getElementById('contact').addEventListener('input', function(e) {
+        //     // Limit to 11 digits and ensure starts with 03
+        //     let value = e.target.value.replace(/\D/g, '');
+        //     if (value.length > 0 && !value.startsWith('03')) {
+        //         value = '03' + value.substring(2);
+        //     }
+        //     e.target.value = value.substring(0, 11);
+        // });
+    </script>
 </body>
 
 </html>
