@@ -6,152 +6,270 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Registration Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+        }
+
+        .checkResult {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .checkResult:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46, 204, 113, 0.3);
+        }
+
+        .checkResult:active {
+            transform: translateY(0);
         }
 
         .form-container {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 500px;
-            transition: all 0.3s ease;
+            max-width: 520px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #3498db, #2ecc71, #3498db);
+            background-size: 200% 100%;
+            animation: gradientBG 3s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .form-container:hover {
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: #2c3e50;
             font-size: 28px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 2px;
         }
 
         h2 i {
-            margin-right: 10px;
+            margin-right: 12px;
             color: #3498db;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 22px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         label {
             font-weight: 600;
             color: #34495e;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 15px;
         }
 
         label i {
             width: 20px;
             color: #3498db;
+            font-size: 16px;
         }
 
         input,
         select {
-            padding: 14px 15px 14px 40px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e3e7;
+            border-radius: 10px;
+            font-size: 15px;
             transition: all 0.3s;
             width: 100%;
+            background-color: #f8fafc;
+            color: #2d3748;
         }
 
         input:focus,
         select:focus {
             border-color: #3498db;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            background-color: white;
         }
 
         input::placeholder {
-            color: #95a5a6;
-        }
-
-        .input-wrapper {
-            position: relative;
+            color: #a0aec0;
+            font-weight: 400;
         }
 
         .input-wrapper i {
             position: absolute;
             left: 15px;
-            top: 69%;
-            transform: translateY(-50%);
+            top: 46px;
             color: #7f8c8d;
+            font-size: 18px;
         }
 
-        button {
+        button[type="submit"] {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 16px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 10px;
+            margin-top: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            letter-spacing: 0.5px;
         }
 
-        button:hover {
+        button[type="submit"]:hover {
             background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+            box-shadow: 0 6px 18px rgba(41, 128, 185, 0.3);
         }
 
-        button:active {
+        button[type="submit"]:active {
             transform: translateY(0);
         }
 
         .error-message {
             color: #e74c3c;
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: 13px;
+            margin-top: 6px;
             display: none;
+            font-weight: 500;
+            padding-left: 5px;
         }
 
+        /* Responsive adjustments */
         @media (max-width: 600px) {
             .form-container {
-                padding: 20px;
+                padding: 30px 20px;
             }
 
             h2 {
                 font-size: 24px;
             }
+
+            .checkResult {
+                top: 15px;
+                right: 15px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
         }
+
+        @media (max-width: 400px) {
+            .form-container {
+                padding: 25px 15px;
+            }
+
+            input, select {
+                padding: 14px 14px 14px 40px;
+            }
+
+            .input-wrapper i {
+                top: 41px;
+                font-size: 16px;
+            }
+        }
+
+
+
+
+
+
+
+
+
+        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-    <button class="checkResult" onclick="checkStudentData   ()">Check Result</button>
-
+    <button class="checkResult" onclick="checkStudentData()">
+        <i class="fas fa-clipboard-list"></i> Check Result
+    </button>
+    
+<button id="theme-toggle" aria-label="Toggle dark mode">
+              <i class="fas fa-sun"></i>
+            </button>
     <div class="form-container">
         <h2><i class="fas fa-user-graduate"></i> Student Registration</h2>
         <form id="studentForm">
@@ -204,7 +322,6 @@
                 <label for="cnic"><i class="fas fa-id-card"></i> CNIC No</label>
                 <i class="fas fa-id-card"></i>
                 <input type="text" id="cnic" placeholder="e.g. 42101-1234567-8" required />
-                <!-- pattern="[0-9]{5}-[0-9]{7}-[0-9]{1}" -->
                 <div class="error-message" id="cnic-error">Please enter CNIC in format: 12345-1234567-1</div>
             </div>
 
@@ -215,82 +332,22 @@
                 <div class="error-message" id="contact-error">Please enter a valid 11-digit phone number starting with 03</div>
             </div>
 
-            <button type="submit" id="submit"><i class="fas fa-paper-plane"></i> Submit</button>
+            <button type="submit" id="submit">
+                <i class="fas fa-paper-plane"></i> Submit
+            </button>
         </form>
-        
     </div>
+
+    <div id="loader" class="loader-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js">
-        // document.getElementById('studentForm').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-            
-        //     // Reset error messages
-        //     const errorMessages = document.querySelectorAll('.error-message');
-        //     errorMessages.forEach(msg => msg.style.display = 'none');
-            
-        //     // Validate form
-        //     let isValid = true;
-            
-        //     // CNIC Validation
-        //     const cnic = document.getElementById('cnic');
-        //     const cnicPattern = /^[0-9]{5}-[0-9]{7}-[0-9]{1}$/;
-        //     if (!cnicPattern.test(cnic.value)) {
-        //         document.getElementById('cnic-error').style.display = 'block';
-        //         isValid = false;
-        //     }
-            
-        //     // Phone Validation
-        //     const phone = document.getElementById('contact');
-        //     const phonePattern = /^03[0-9]{9}$/;
-        //     if (!phonePattern.test(phone.value)) {
-        //         document.getElementById('contact-error').style.display = 'block';
-        //         isValid = false;
-        //     }
-            
-        //     // Age Validation
-        //     const age = document.getElementById('age');
-        //     if (age.value < 12 || age.value > 60) {
-        //         document.getElementById('age-error').style.display = 'block';
-        //         isValid = false;
-        //     }
-            
-        //     // If form is valid, show success message
-        //     if (isValid) {
-        //         Swal.fire({
-        //             icon: 'success',
-        //             title: 'Registration Successful!',
-        //             text: 'Your student registration has been submitted.',
-        //             confirmButtonColor: '#3498db'
-        //         });
-        //         // Here you can add code to submit to Supabase
-        //         // For example: supabase.from('students').insert(formData)
-        //     }
-        // });
-
-        // // Real-time validation for CNIC
-        // document.getElementById('cnic').addEventListener('input', function(e) {
-        //     // Auto-format CNIC as user types
-        //     let value = e.target.value.replace(/\D/g, '');
-        //     if (value.length > 5) {
-        //         value = value.substring(0, 5) + '-' + value.substring(5);
-        //     }
-        //     if (value.length > 13) {
-        //         value = value.substring(0, 13) + '-' + value.substring(13, 14);
-        //     }
-        //     e.target.value = value.substring(0, 15);
-        // });
-
-        // // Real-time validation for phone
-        // document.getElementById('contact').addEventListener('input', function(e) {
-        //     // Limit to 11 digits and ensure starts with 03
-        //     let value = e.target.value.replace(/\D/g, '');
-        //     if (value.length > 0 && !value.startsWith('03')) {
-        //         value = '03' + value.substring(2);
-        //     }
-        //     e.target.value = value.substring(0, 11);
-        // });
+ 
     </script>
 </body>
 

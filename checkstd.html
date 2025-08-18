@@ -4,15 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Status Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 20px;
         }
         
@@ -20,16 +28,56 @@
             background: white;
             padding: 2.5rem;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 500px;
+            max-width: 800px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #3498db, #2980b9, #3498db);
+            background-size: 200% 100%;
+            animation: gradientBG 3s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         h2 {
             color: #2c3e50;
             margin-bottom: 1.5rem;
-            font-weight: 600;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 2px;
+        }
+        
+        h2 i {
+            color: #3498db;
+            margin-right: 10px;
         }
         
         .input-group {
@@ -39,179 +87,196 @@
         
         input {
             width: 100%;
-            padding: 1rem 1.25rem;
-            border: 2px solid #e0e0e0;
+            padding: 1rem 1.25rem 1rem 3rem;
+            border: 2px solid #e0e3e7;
             border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+            color: #2d3748;
         }
         
         input:focus {
-            border-color: #4285f4;
+            border-color: #3498db;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            background-color: white;
+        }
+        
+        .input-group .fa-clipboard-check {
+            position: absolute;
+            left: 15px;
+            top: 80%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 18px;
+        }
+
+
+        .input-group .fa-search {
+            position: absolute;
+            left: 15px;
+            top: 23%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 18px;
         }
         
         button {
-            background-color: #4285f4;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem;
             border-radius: 10px;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             width: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            margin-top:20px;
+            box-shadow: 0 4px 12px rgba(41, 128, 185, 0.2);
         }
         
         button:hover {
-            background-color: #3367d6;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+            box-shadow: 0 6px 18px rgba(41, 128, 185, 0.3);
         }
         
-        button:active {
-            transform: translateY(0);
-        }
         
         .status-container {
             margin-top: 1.5rem;
             transition: all 0.4s ease;
+            overflow-x: auto;
         }
         
-        .status-card {
-            padding: 1.25rem;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #4285f4;
-            font-size: 1rem;
-            text-align: left;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
         
-        .status-card.show {
-            opacity: 1;
-            height: auto;
-            padding: 1.25rem;
-            margin-top: 0;
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
         }
         
-        .status-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .status-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 0.5rem;
-        }
-        
-        .status-title {
+        th {
+            background-color: #3498db;
+            color: white;
             font-weight: 600;
-            color: #2c3e50;
+            position: sticky;
+            top: 0;
         }
         
-        .status-content {
-            color: #34495e;
-            line-height: 1.5;
+        tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9fbfe;
+        }
+        
+        tr:nth-child(even):hover {
+            background-color: #f0f5ff;
+        }
+        
+        .status-approved {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .status-rejected {
+            color: #f44336;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            color: #FFC107;
+            font-weight: 600;
         }
         
         .instructions {
             color: #7f8c8d;
             font-size: 0.875rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             text-align: center;
-            line-height: 1.4;
+            line-height: 1.5;
         }
         
-        /* @media (max-width: 480px) { */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
             .container {
-                padding: 1.5rem;
+                padding: 1.75rem;
             }
             
-            h2 {
-                font-size: 1.5rem;
+            th, td {
+                padding: 10px 5px;
+                font-size: 0.9rem;
             }
-
-            .info-row {
-    display: flex;
-    margin-bottom: 0.75rem;
-    align-items: center;
-}
-
-.info-label {
-    font-weight: 600;
-    color: #2c3e50;
-    min-width: 80px;
-    margin-right: 1rem;
-}
-
-.info-value {
-    color: #4f5e34;
-    flex-grow: 1;
-}
-
-.status-approved {
-    color: #4CAF50;
-    font-weight: 600;
-}
-
-.status-rejected {
-    color: #FF5722;
-    font-weight: 600;
-}
-
-.status-pending {
-    color: #FFC107;
-    font-weight: 600;
-}
-
-/* Loading animation */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.status-icon.loading {
-    animation: spin 1s linear infinite;
-}
-/* } */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Student Status Checker</h2>
+        <h2><i class="fas fa-user-graduate "></i> Student Status Checker</h2>
         <div class="input-group">
-            <input type="text" id="stdInput" placeholder="Enter student ID or name...">
-            <button id="student_btn">Check Status</button>
+            <i class="fas fa-search "></i>
+            <input type="text" id="stdInput" placeholder="Enter student CNIC (e.g., 42101-1234567-8)">
+            <button id="student_btn">
+                <i class="fas fa-clipboard-check"></i> Check Status
+            </button>
         </div>
         
         <div class="status-container">
-            <div id="showStatus" class="status-card">
-                <div class="status-header">
-                    <svg class="status-icon" viewBox="0 0 24 24" fill="#4285f4">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm0-14h2v10h-2V3z"/>
-                    </svg>
-                    <div class="status-title">Student Status</div>
-                </div>
-                <div class="status-content">Enter a student ID and click "Check Status" to view information.</div>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Courses</th>
+                        <th>Roll #</th>
+                        <th>CNIC #</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="stdDataCheck">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
         </div>
         
-        <p class="instructions">Enter the student's ID or name in the field above and click the button to check their current status and information.</p>
+        <p class="instructions">Enter the student's CNIC No in the field above and click the button to check their current status and information.</p>
+    </div>
+
+    <div id="loader" class="loader-overlay" style="display: none;">
+        <div class="spinner"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="app.js"></script>
-    
+    <script src="app.js">
+          
+    </script>
 </body>
-</html>   
+</html>
+
+
