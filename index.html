@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Registration Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
+
     <style>
         * {
             margin: 0;
@@ -81,9 +81,17 @@
         }
 
         @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .form-container:hover {
@@ -239,7 +247,8 @@
                 padding: 25px 15px;
             }
 
-            input, select {
+            input,
+            select {
                 padding: 14px 14px 14px 40px;
             }
 
@@ -248,16 +257,6 @@
                 font-size: 16px;
             }
         }
-
-
-
-
-
-
-
-
-
-        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -266,10 +265,10 @@
     <button class="checkResult" onclick="checkStudentData()">
         <i class="fas fa-clipboard-list"></i> Check Result
     </button>
-    
+    <!--     
 <button id="theme-toggle" aria-label="Toggle dark mode">
               <i class="fas fa-sun"></i>
-            </button>
+            </button> -->
     <div class="form-container">
         <h2><i class="fas fa-user-graduate"></i> Student Registration</h2>
         <form id="studentForm">
@@ -329,7 +328,8 @@
                 <label for="contact"><i class="fas fa-mobile-alt"></i> Contact</label>
                 <i class="fas fa-mobile-alt"></i>
                 <input type="tel" id="contact" placeholder="e.g. 03001234567" pattern="03[0-9]{9}" required />
-                <div class="error-message" id="contact-error">Please enter a valid 11-digit phone number starting with 03</div>
+                <div class="error-message" id="contact-error">Please enter a valid 11-digit phone number starting with
+                    03</div>
             </div>
 
             <button type="submit" id="submit">
@@ -347,7 +347,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js">
- 
+
     </script>
 </body>
 

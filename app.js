@@ -76,7 +76,8 @@ console.log("Next roll number:", newRoll);
                 Swal.fire("Success", "Data successfully submitted!", "success");
                 // Reset fields
                 }
-          }
+              })
+              }
           
           // ========================== Admin Login ==========================
           if (adminLogin) {
@@ -362,18 +363,17 @@ console.log("Next roll number:", newRoll);
                 `;
               }
             });
-          
+            
             function showError(message) {
               resultTable.innerHTML = `
-                <tr>
-                  <td colspan="7" style="text-align: center; padding: 20px; color: #f44336;">
-                    <i class="fas fa-exclamation-circle"></i> ${message}
-                  </td>
-                </tr>
+              <tr>
+              <td colspan="7" style="text-align: center; padding: 20px; color: #f44336;">
+              <i class="fas fa-exclamation-circle"></i> ${message}
+              </td>
+              </tr>
               `;
             }
           }
-          
           
           
           // // Theme Toggle
