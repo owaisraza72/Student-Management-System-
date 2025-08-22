@@ -154,15 +154,28 @@ let array = [
   {
     title: "Total Students",
     value: 50,
-    class: "fas fa-users",
+    iconClass: "fas fa-users",
+    iconColor: "card-icon students",
   },
   {
     title: "Pending Request",
     value: 10,
-    class: "fas fa-clock",
+    iconClass: "fas fa-clock",
+    iconColor: "card-icon pending",
   },
-  { title: "Approved", value: 5, class: "fas fa-check" },
-  { title: "Rejected", value: 4, class: "fas fa-times-circle" },
+  {
+    title: "Approved",
+    value: 5,
+    iconClass: "fas fa-check",
+    iconColor: "card-icon approved",
+  },
+
+  {
+    title: "Rejected",
+    value: 4,
+    iconClass: "fas fa-times-circle",
+    iconColor: "card-icon rejected",
+  },
 ];
 
 // ========================== Load Student Dashboard ==========================
@@ -179,8 +192,8 @@ async function showDashboard() {
                         <div class="card-title">${element.title}</div>
                         <div class="card-value">${element.value}</div>
                     </div>
-                    <div class="card-icon students">
-                        <i class="${element.class}"></i>
+                    <div class="${element.iconColor}">
+                        <i class="${element.iconClass}"></i>
                     </div>
                 </div>
             </div> `;
@@ -390,6 +403,7 @@ if (checkBtn) {
                     </td>
                   </tr>
                 `;
+                
     } catch (error) {
       console.error("Error:", error.message);
       resultTable.innerHTML = `
@@ -415,6 +429,34 @@ if (checkBtn) {
   }
 }
 
+ // Add Student button functionality
+            document.getElementById('addStudentBtn').addEventListener('click', function () {
+                Swal.fire({
+                    title: 'Add New Student',
+                    html: `
+                        <input type="text" id="name" class="swal2-input" placeholder="Full Name">
+                        <input type="email" id="email" class="swal2-input" placeholder="Email">
+                        <input type="text" id="course" class="swal2-input" placeholder="Course">
+                    `,
+                    confirmButtonText: 'Add Student',
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        return {
+                            name: document.getElementById('name').value,
+                            email: document.getElementById('email').value,
+                            course: document.getElementById('course').value
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Added!',
+                            'Student has been added successfully.',
+                            'success'
+                        );
+                    }
+                });
+            });
 // // Theme Toggle
 // const themeToggle = document.getElementById('theme-toggle');
 // if(themeToggle){
