@@ -150,42 +150,73 @@ if (currentPage === "dashboard.html" || currentPage === "admin.html") {
   checkAuth();
 }
 
-let array = [
-  {
-    title: "Total Students",
-    value: 50,
-    iconClass: "fas fa-users",
-    iconColor: "card-icon students",
-  },
-  {
-    title: "Pending Request",
-    value: 10,
-    iconClass: "fas fa-clock",
-    iconColor: "card-icon pending",
-  },
-  {
-    title: "Approved",
-    value: 5,
-    iconClass: "fas fa-check",
-    iconColor: "card-icon approved",
-  },
+async function stdTitileCard(status) {
+  if (status) {
+    const { count, error } = await client
+      .from("student_form")
+      .select("*", { count: "exact" })
+      .eq("status", status);
 
-  {
-    title: "Rejected",
-    value: 4,
-    iconClass: "fas fa-times-circle",
-    iconColor: "card-icon rejected",
-  },
-];
+    if (error) {
+      Swal.fire("Error", error.message);
+      return 0;
+    }
+    return count;
+  }
+  const { count, error } = await client
+    .from("student_form")
+    .select("*", { count: "exact" });
 
-// ========================== Load Student Dashboard ==========================
+  if (error) {
+    Swal.fire("Error", error.message);
+    return 0;
+  }
+  return count;
+}
+
 async function showDashboard() {
+  let totalStd = await stdTitileCard();
+  let pending = await stdTitileCard("Pending");
+  let approved = await stdTitileCard("Approved");
+  let rejected = await stdTitileCard("Rejected");
+
+  console.log(totalStd, pending, approved, rejected);
+
+  let arrayStd = [
+    {
+      title: "Total Students",
+      value: totalStd,
+      iconClass: "fas fa-users",
+      iconColor: "card-icon students",
+    },
+    {
+      title: "Pending Request",
+      value: pending,
+      iconClass: "fas fa-clock",
+      iconColor: "card-icon pending",
+    },
+    {
+      title: "Approved",
+      value: approved,
+      iconClass: "fas fa-check",
+      iconColor: "card-icon approved",
+    },
+
+    {
+      title: "Rejected",
+      value: rejected,
+      iconClass: "fas fa-times-circle",
+      iconColor: "card-icon rejected",
+    },
+  ];
+
+  // ========================== Load Student Dashboard ==========================
   if (!dashboard) return;
 
   let cardShow = document.querySelector(".card-container");
-  // console.log(cardShow);
+  cardShow.innerHTML = "";
 
-  array.forEach((element) => {
+  arrayStd.forEach((element) => {
     cardShow.innerHTML += `<div class="card">
                 <div class="card-header">
                     <div>
@@ -208,33 +239,167 @@ async function showDashboard() {
   dashboard.innerHTML = ""; // clear old data
   data.forEach((element) => {
     dashboard.innerHTML += `
-                <tr>
-                  <td>${element.full_name}</td>
-                  <td>${element.email}</td>
-                  <td>${element.courses}</td>
-                  <td>${element.age}</td>
-                  <td>${element.gender}</td>
-                  <td>${element.roll_num}</td>
-                  <td>${element.cnic}</td>
-                  <td>${element.contact}</td>
-                  <td>
-                    <select onchange="statusVa(this.value, ${element.id})">
-                      <option disabled selected>${
-                        element.status || "Select"
-                      }</option>
-                      <option>Pending</option>
-                      <option>Approved</option>
-                      <option>Rejected</option>
-                    </select>
-                  </td>
-                </tr>
+                  <tr>
+        <td>${element.full_name}</td>
+        <td>${element.email}</td>
+        <td>${element.courses}</td>
+        <td>${element.age}</td>
+        <td>${element.gender}</td>
+        <td>${element.roll_num}</td>
+
+        <td>
+            <select onchange="statusVa(this.value, ${element.id})">
+                <option disabled selected>${element.status || "Select"}</option>
+                <option>Pending</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+            </select>
+        </td>
+        <td>
+            <div class="action-buttons">
+                <button class="btn-edit" onclick="editStudent(${
+                  element.id
+                })" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" onclick="deleteStudent(${
+                  element.id
+                })" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
               `;
   });
 }
 showDashboard();
 
-function checkStudentData() {
-  window.location.href = "checkstd.html";
+// ========================== Edit Student Function ==========================
+async function editStudent(studentId) {
+  // Get student data from DB
+  const { data, error } = await client
+    .from("student_form")
+    .select("*")
+    .eq("id", studentId)
+    .single();
+
+  if (error) {
+    Swal.fire("Error", "Unable to fetch student data.", "error");
+    return;
+  }
+
+  // Show SweetAlert2 form with student details
+  const { value: formValues } = await Swal.fire({
+    title: "✏️ Edit Student",
+    html: `
+    <style>
+      .swal2-popup .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 10px;
+        text-align: left;
+      }
+      .swal2-popup label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .swal2-popup input {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+      }
+      .swal2-popup input:focus {
+        border-color: #3085d6;
+        box-shadow: 0 0 4px rgba(48,133,214,0.4);
+      }
+    </style>
+
+    <div class="form-grid">
+      <div>
+        <label>Full Name</label>
+        <input id="swal-full_name" value="${data.full_name}">
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="swal-email" type="email" value="${data.email}">
+      </div>
+      <div>
+        <label>Courses</label>
+        <input id="swal-courses" value="${data.courses}">
+      </div>
+      <div>
+        <label>Age</label>
+        <input id="swal-age" type="number" value="${data.age}">
+      </div>
+      <div>
+        <label>Gender</label>
+        <input id="swal-gender" value="${data.gender}">
+      </div>
+      <div>
+        <label>Roll No</label>
+        <input id="swal-roll_num" value="${data.roll_num}">
+      </div>
+      <div>
+        <label>CNIC</label>
+        <input id="swal-cnic" value="${data.cnic}">
+      </div>
+      <div>
+        <label>Contact</label>
+        <input id="swal-contact" value="${data.contact}">
+      </div>
+    </div>
+  `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: "💾 Update",
+    preConfirm: () => {
+      return {
+        full_name: document.getElementById("swal-full_name").value,
+        email: document.getElementById("swal-email").value,
+        courses: document.getElementById("swal-courses").value,
+        age: document.getElementById("swal-age").value,
+        gender: document.getElementById("swal-gender").value,
+        roll_num: document.getElementById("swal-roll_num").value,
+        cnic: document.getElementById("swal-cnic").value,
+        contact: document.getElementById("swal-contact").value,
+      };
+    },
+  });
+
+  if (formValues) {
+    // Update student in DB
+    const { error: updateError } = await client
+      .from("student_form")
+      .update(formValues)
+      .eq("id", studentId);
+
+    if (updateError) {
+      Swal.fire("Error", "Failed to update student.", "error");
+      return;
+    }
+
+    Swal.fire("Updated!", "Student details updated successfully.", "success");
+    showDashboard(); // Refresh dashboard
+  }
+}
+
+// ========================== Delete Student Function ==========================
+async function deleteStudent(studentId) {
+  const response = await client
+    .from("student_form")
+    .delete()
+    .eq("id", studentId);
+
+  Swal.fire("Student has been Deleted");
 }
 
 // ========================== Status Update ==========================
@@ -251,6 +416,7 @@ async function statusVa(statusValue, std_id) {
   }
 
   Swal.fire("Updated!", "Student status has been updated.", "success");
+  showDashboard();
 }
 
 let statusFilter = document.getElementById("statusFilter");
@@ -271,27 +437,25 @@ async function selectFilter() {
   dashboard.innerHTML = "";
   filtered.forEach((element) => {
     dashboard.innerHTML += `
-                <tr>
-                  <td>${element.full_name}</td>
-                  <td>${element.email}</td>
-                  <td>${element.courses}</td>
-                  <td>${element.age}</td>
-                  <td>${element.gender}</td>
-                  <td>${element.roll_num}</td>
-                  <td>${element.cnic}</td>
-                  <td>${element.contact}</td>
-                  <td>
-                    <select onchange="statusVa(this.value, ${element.id})">
-                      <option disabled selected>${
-                        element.status || "Select"
-                      }</option>
-                      <option>Pending</option>
-                      <option>Approved</option>
-                      <option>Rejected</option>
-                    </select>
-                  </td>
-                </tr>
-              `;
+    <tr>
+    <td>${element.full_name}</td>
+    <td>${element.email}</td>
+    <td>${element.courses}</td>
+    <td>${element.age}</td>
+    <td>${element.gender}</td>
+    <td>${element.roll_num}</td>
+    <td>${element.cnic}</td>
+    <td>${element.contact}</td>
+    <td>
+    <select onchange="statusVa(this.value, ${element.id})">
+    <option disabled selected>${element.status || "Select"}</option>
+    <option>Pending</option>
+    <option>Approved</option>
+    <option>Rejected</option>
+    </select>
+    </td>
+    </tr>
+    `;
   });
 }
 
@@ -347,7 +511,10 @@ if (inputValue) {
   });
 }
 
-// ========================== Check Student Data ==========================
+// ============================================= Check Student Data ============================================
+function checkStudentData() {
+  window.location.href = "checkstd.html";
+}
 const checkBtn = document.getElementById("student_btn");
 const inputField = document.getElementById("stdInput");
 const resultTable = document.getElementById("stdDataCheck");
@@ -403,7 +570,6 @@ if (checkBtn) {
                     </td>
                   </tr>
                 `;
-                
     } catch (error) {
       console.error("Error:", error.message);
       resultTable.innerHTML = `
@@ -429,34 +595,30 @@ if (checkBtn) {
   }
 }
 
- // Add Student button functionality
-            document.getElementById('addStudentBtn').addEventListener('click', function () {
-                Swal.fire({
-                    title: 'Add New Student',
-                    html: `
+// Add Student button functionality
+document.getElementById("addStudentBtn").addEventListener("click", function () {
+  Swal.fire({
+    title: "Add New Student",
+    html: `
                         <input type="text" id="name" class="swal2-input" placeholder="Full Name">
                         <input type="email" id="email" class="swal2-input" placeholder="Email">
                         <input type="text" id="course" class="swal2-input" placeholder="Course">
                     `,
-                    confirmButtonText: 'Add Student',
-                    focusConfirm: false,
-                    preConfirm: () => {
-                        return {
-                            name: document.getElementById('name').value,
-                            email: document.getElementById('email').value,
-                            course: document.getElementById('course').value
-                        }
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire(
-                            'Added!',
-                            'Student has been added successfully.',
-                            'success'
-                        );
-                    }
-                });
-            });
+    confirmButtonText: "Add Student",
+    focusConfirm: false,
+    preConfirm: () => {
+      return {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        course: document.getElementById("course").value,
+      };
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire("Added!", "Student has been added successfully.", "success");
+    }
+  });
+});
 // // Theme Toggle
 // const themeToggle = document.getElementById('theme-toggle');
 // if(themeToggle){
