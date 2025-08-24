@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Add Admins</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        /* ========== Sidebar Styles ========== */
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding: 20px 0;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: #3498db;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            padding: 12px 20px;
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: none;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 15px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        /* ========== Main Content Styles ========== */
+        .main-content {
+            margin-left: 220px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* ========== Loader Styles ========== */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ========== Table Styles ========== */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #eafaf1;
+            color: #27ae60;
+        }
+
+        /* ========== Responsive Styles ========== */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 80px;
+                overflow: hidden;
+            }
+
+            .sidebar-header h2,
+            .nav-item span,
+            .logout-btn span {
+                display: none;
+            }
+
+            .sidebar-header {
+                justify-content: center;
+                padding-bottom: 15px;
+            }
+
+            .sidebar-header img {
+                margin-right: 0;
+            }
+
+            .nav-item {
+                justify-content: center;
+                margin: 5px 5px;
+                padding: 12px 0;
+            }
+
+            .nav-item i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+
+            .logout-btn {
+                justify-content: center;
+                padding: 12px 0;
+            }
+
+            .logout-btn i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-title {
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-row .form-group {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            
+            <h2>Admin Panel</h2>
+        </div>
+
+        <div class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Students</span>
+            </a>
+            <a href="teachers.html" class="nav-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teachers</span>
+            </a>
+            <a href="courses.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Courses</span>
+            </a>
+            <a href="addadmins.html" class="nav-item active">
+                <i class="fas fa-user-shield"></i>
+                <span>Admins</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <button class="logout-btn" id="logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Manage Campus Admins</h1>
+        </div>
+
+        <!-- Add Admin Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Add New Campus Admin</h2>
+            </div>
+            <form id="adminForms">
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" placeholder="Enter full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="campus" class="form-label">Campuses</label>
+                                        <select class="form-select" id="campus" required>
+                        <option value="">Select Campus</option>
+                        <option value="Head Office">Head Office</option>
+                        <option value="North Campus">North Campus</option>
+                        <option value="Gulshan Campus">Gulshan Campus</option>
+                        <option value="Bahadrabad Campus">Bahadrabad Campus</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Admin</button>
+                <button type="reset" class="btn btn-secondary">Reset Form</button>
+            </form>
+        </div>
+
+        <!-- Admins List -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Existing Campus Admins</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Campus</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminsTableBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loader Overlay -->
+    <div class="loader-overlay hidden" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    
+
+    
+       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabaseUrl = "https://enoclxtimybzrchssnjk.supabase.co";
+const supabaseKey =
+      '   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVub2NseHRpbXlienJjaHNzbmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwMjg1NTAsImV4cCI6MjA3MTYwNDU1MH0.HWiL-SvBpi31_tGVhBpYG0VBOLIBjkRZXB5nCT926Mw';
+
+const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+import { checkAuth } from "./app.js";  
+
+  checkAuth();
+
+// DOM Elements
+const adminForm = document.getElementById('adminForms');
+const loader = document.getElementById('loader');
+const logoutBtn = document.getElementById('logout');
+let adminsTableShow = document.getElementById('adminsTableBody');
+
+// Loader functions
+function showLoader() { loader.classList.remove('hidden'); }
+function hideLoader() { loader.classList.add('hidden'); }
+
+// ========================== Add New Admin ==========================
+if(adminForm){
+  adminForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const campus = document.getElementById('campus').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if(password !== confirmPassword){
+      Swal.fire("Error", "Passwords do not match!", "error");
+      return;
+    }
+    if(password.length < 6){
+      Swal.fire("Error", "Password must be at least 6 characters!", "error");
+      return;
+    }
+
+    showLoader();
+    try {
+      const { data, error: authError } = await client.auth.signUp({
+        email: email,
+        password: password
+      });
+      if(authError) throw authError;
+
+      const user = data.user;
+
+      const { error: insertError } = await client
+        .from("campus_admins")
+        .insert({
+          id: user.id,
+          admin_name: fullName,
+          admin_email: email,
+          admin_campus: campus
+        });
+      if(insertError) throw insertError;
+
+      hideLoader();
+      Swal.fire("Success", "Campus admin added successfully!", "success");
+      adminForm.reset();
+      adminDashboard();
+    } catch(err){
+      hideLoader();
+      Swal.fire("Error", err.message, "error");
+    }
+  });
+}
+
+// ========================== Show Admins ==========================
+async function adminDashboard(){
+  const { data, error } = await client.from("campus_admins").select("*");
+ 
+  if(error){ console.log(error.message); return; }
+
+  adminsTableShow.innerHTML = "";
+  data.forEach(admin => {
+    adminsTableShow.innerHTML += `
+      <tr>
+        <td>${admin.admin_name}</td>
+        <td>${admin.admin_email}</td>
+        <td>${admin.admin_campus}</td>
+        <td><span class="badge badge-success">Active</span></td>
+        <td>
+          <button class="action-btn btn-edit" onclick="editAdmin('${admin.id}')">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="action-btn btn-delete" onclick="deleteAdmin('${admin.id}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+adminDashboard();
+
+// ========================== Edit Admin ==========================
+async function editAdmin(adminId){
+  const { data: admin, error } = await client
+    .from("campus_admins")
+    .select("*")
+    .eq("id", adminId)
+    .single();
+
+  if(error){ Swal.fire("Error", "Unable to fetch admin.", "error"); return; }
+
+  const { value: formValues } = await Swal.fire({
+    title: "Edit Admin",
+    html: `
+      <input id="swal-name" class="swal2-input" placeholder="Full Name" value="${admin.admin_name}">
+      <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${admin.admin_email}">
+      <select id="swal-campus" class="swal2-input">
+        <option value="Head Office" ${admin.admin_campus=="Head Office"?"selected":""}>Head Office</option>
+        <option value="North Campus" ${admin.admin_campus=="North Campus"?"selected":""}>North Campus</option>
+  <option value="Gulshan Campus" ${admin.admin_campus=="Gulshan Campus"?"selected":""}>Gulshan Campus</option>
+        <option value="Bahadrabad Campus" ${admin.admin_campus=="Bahadrabad Campus"?"selected":""}>Bahadrabad Campus</option>
+        
+      </select>
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    preConfirm: () => {
+      return {
+        admin_name: document.getElementById('swal-name').value,
+        admin_email: document.getElementById('swal-email').value,
+        admin_campus: document.getElementById('swal-campus').value
+      }
+    }
+  });
+
+  if(formValues){
+    const { error: updateError } = await client
+      .from("campus_admins")
+      .update(formValues)
+      .eq("id", adminId);
+
+    if(updateError){
+      Swal.fire("Error", updateError.message, "error");
+    } else {
+      Swal.fire("Updated!", "Admin details updated successfully", "success");
+      adminDashboard();
+    }
+  }
+}
+
+// ========================== Delete Admin ==========================
+async function deleteAdmin(adminId){
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "This will permanently delete the admin!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  });
+
+  if(result.isConfirmed){
+    const { error } = await client.from("campus_admins").delete().eq("id", adminId);
+    if(error){
+      Swal.fire("Error", error.message, "error");
+    } else {
+      Swal.fire("Deleted!", "Admin has been deleted.", "success");
+      adminDashboard();
+    }
+  }
+}
+
+// ========================== Logout ==========================
+if(logoutBtn){
+  logoutBtn.addEventListener("click", async () => {
+    showLoader();
+    const { error } = await client.auth.signOut();
+    hideLoader();
+    if(error){
+      Swal.fire("Error", error.message, "error");
+    } else {
+      Swal.fire("Logged Out", "You have been logged out!", "success");
+      window.location.href = "admin.html";
+    }
+  });
+}
+    </script>
+</body>
+</html>

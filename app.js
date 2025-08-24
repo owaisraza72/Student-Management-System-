@@ -11,6 +11,8 @@ let adminLogin = document.getElementById("adminLogin");
 let studentForm = document.getElementById("studentForm");
 let dashboard = document.getElementById("showData");
 const logoutBtn = document.getElementById("logout");
+const loader = document.getElementById('loader');
+
 
 const inputStd = document.getElementById("stdInput");
 const checkStd = document.getElementById("student_btn");
@@ -21,6 +23,7 @@ if (studentForm) {
   const full_name = document.getElementById("name");
   const email = document.getElementById("email");
   const courses = document.getElementById("courses");
+  const campuses = document.getElementById("campus");
   const age = document.getElementById("age");
   const gender = document.getElementById("gender");
   const cnic = document.getElementById("cnic");
@@ -34,6 +37,7 @@ if (studentForm) {
       !full_name.value ||
       !email.value ||
       !courses.value ||
+      !campuses.value||
       !age.value ||
       !gender.value ||
       !cnic.value ||
@@ -60,6 +64,7 @@ if (studentForm) {
       full_name: full_name.value,
       email: email.value,
       courses: courses.value,
+      campuses:campuses.value,
       age: age.value,
       gender: gender.value,
       roll_num: newRoll,
@@ -128,25 +133,30 @@ if (logoutBtn) {
 
 // Loader show/hide functions
 function showLoader() {
-  document.getElementById("loader").style.display = "block";
+  loader.style.display = "block";
 }
 function hideLoader() {
-  document.getElementById("loader").style.display = "none";
+  loader.style.display = "none";
 }
 
-async function checkAuth() {
+export async function checkAuth() {
   const {
     data: { session },
   } = await client.auth.getSession();
+
   const currentPage = window.location.pathname.split("/").pop();
 
-  if (!session && currentPage === "dashboard.html") {
+  // agar session nahi hai aur page restricted hai → admin.html redirect
+  if (
+    !session &&
+    (currentPage === "dashboard.html" || currentPage === "addAdmin.html")
+  ) {
     window.location.href = "admin.html";
   }
 }
 
 const currentPage = window.location.pathname.split("/").pop();
-if (currentPage === "dashboard.html" || currentPage === "admin.html") {
+if (currentPage === "dashboard.html"  || currentPage === "admin.html") {
   checkAuth();
 }
 
@@ -174,13 +184,15 @@ async function stdTitileCard(status) {
   return count;
 }
 
-async function showDashboard() {
+
+// =========================  dashboardCardStd ===================================
+async function dashboardCardStd() {
+
   let totalStd = await stdTitileCard();
   let pending = await stdTitileCard("Pending");
   let approved = await stdTitileCard("Approved");
   let rejected = await stdTitileCard("Rejected");
 
-  console.log(totalStd, pending, approved, rejected);
 
   let arrayStd = [
     {
@@ -210,7 +222,7 @@ async function showDashboard() {
     },
   ];
 
-  // ========================== Load Student Dashboard ==========================
+  // ============ Load Student Dashboard ========
   if (!dashboard) return;
 
   let cardShow = document.querySelector(".card-container");
@@ -230,12 +242,18 @@ async function showDashboard() {
             </div> `;
   });
 
+  }
+
+async function showDashboard() {
+
+ let  dashboardCard = await dashboardCardStd();
+
   const { data, error } = await client.from("student_form").select("*");
   if (error) {
     console.log(error.message);
     return;
   }
-
+console.log(data)
   dashboard.innerHTML = ""; // clear old data
   data.forEach((element) => {
     dashboard.innerHTML += `
@@ -243,7 +261,7 @@ async function showDashboard() {
         <td>${element.full_name}</td>
         <td>${element.email}</td>
         <td>${element.courses}</td>
-        <td>${element.age}</td>
+        <td>${element.campuses}</td>
         <td>${element.gender}</td>
         <td>${element.roll_num}</td>
 
@@ -289,7 +307,20 @@ async function editStudent(studentId) {
     return;
   }
 
-  // Show SweetAlert2 form with student details
+  // ========================== Delete Student Function ==========================
+async function deleteStudent(studentId) {
+  const response = await client
+    .from("student_form")
+    .delete()
+    .eq("id", studentId);
+
+  Swal.fire("Student has been Deleted");
+
+  dashboardCardStd();
+}
+
+
+  // ==================Show SweetAlert2 form with student details=====================
   const { value: formValues } = await Swal.fire({
     title: "✏️ Edit Student",
     html: `
@@ -337,6 +368,10 @@ async function editStudent(studentId) {
         <input id="swal-courses" value="${data.courses}">
       </div>
       <div>
+        <label>Campuses</label>
+        <input id="swal-campuses" value="${data.campuses}">
+      </div>
+      <div>
         <label>Age</label>
         <input id="swal-age" type="number" value="${data.age}">
       </div>
@@ -366,6 +401,7 @@ async function editStudent(studentId) {
         full_name: document.getElementById("swal-full_name").value,
         email: document.getElementById("swal-email").value,
         courses: document.getElementById("swal-courses").value,
+        campuses: document.getElementById("swal-campuses").value,
         age: document.getElementById("swal-age").value,
         gender: document.getElementById("swal-gender").value,
         roll_num: document.getElementById("swal-roll_num").value,
@@ -392,15 +428,6 @@ async function editStudent(studentId) {
   }
 }
 
-// ========================== Delete Student Function ==========================
-async function deleteStudent(studentId) {
-  const response = await client
-    .from("student_form")
-    .delete()
-    .eq("id", studentId);
-
-  Swal.fire("Student has been Deleted");
-}
 
 // ========================== Status Update ==========================
 async function statusVa(statusValue, std_id) {
@@ -416,7 +443,7 @@ async function statusVa(statusValue, std_id) {
   }
 
   Swal.fire("Updated!", "Student status has been updated.", "success");
-  showDashboard();
+            showDashboard();
 }
 
 let statusFilter = document.getElementById("statusFilter");
@@ -441,11 +468,9 @@ async function selectFilter() {
     <td>${element.full_name}</td>
     <td>${element.email}</td>
     <td>${element.courses}</td>
-    <td>${element.age}</td>
+    <td>${element.campuses}</td>
     <td>${element.gender}</td>
     <td>${element.roll_num}</td>
-    <td>${element.cnic}</td>
-    <td>${element.contact}</td>
     <td>
     <select onchange="statusVa(this.value, ${element.id})">
     <option disabled selected>${element.status || "Select"}</option>
@@ -454,6 +479,20 @@ async function selectFilter() {
     <option>Rejected</option>
     </select>
     </td>
+    <td>
+            <div class="action-buttons">
+                <button class="btn-edit" onclick="editStudent(${
+                  element.id
+                })" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" onclick="deleteStudent(${
+                  element.id
+                })" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </td>
     </tr>
     `;
   });
@@ -484,11 +523,9 @@ if (inputValue) {
                       <td>${element.full_name}</td>
                       <td>${element.email}</td>
                       <td>${element.courses}</td>
-                      <td>${element.age}</td>
+                      <td>${element.campuses}</td>
                       <td>${element.gender}</td>
                       <td>${element.roll_num}</td>
-                      <td>${element.cnic}</td>
-                      <td>${element.contact}</td>
                       <td>
                         <select onchange="statusVa(this.value, ${element.id})">
                           <option disabled selected>${
@@ -499,6 +536,20 @@ if (inputValue) {
                           <option>Rejected</option>
                         </select>
                       </td>
+                      <td>
+            <div class="action-buttons">
+                <button class="btn-edit" onclick="editStudent(${
+                  element.id
+                })" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" onclick="deleteStudent(${
+                  element.id
+                })" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </td>
                     </tr>
                   `;
         matchFound = true;
@@ -561,8 +612,8 @@ if (checkBtn) {
                     <td>${student.full_name}</td>
                     <td>${student.email}</td>
                     <td>${student.courses}</td>
+                    <td>${student.campuses}</td>
                     <td>${student.roll_num}</td>
-                    <td>${student.cnic}</td>
                     <td class="status-${
                       student.status?.toLowerCase() || "pending"
                     }">
@@ -596,7 +647,9 @@ if (checkBtn) {
 }
 
 // Add Student button functionality
-document.getElementById("addStudentBtn").addEventListener("click", function () {
+ let addStudentBtn = document.getElementById("addStudentBtn")
+ if(addStudentBtn){
+ addStudentBtn.addEventListener("click", function () {
   Swal.fire({
     title: "Add New Student",
     html: `
@@ -619,6 +672,7 @@ document.getElementById("addStudentBtn").addEventListener("click", function () {
     }
   });
 });
+}
 // // Theme Toggle
 // const themeToggle = document.getElementById('theme-toggle');
 // if(themeToggle){

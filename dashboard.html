@@ -628,7 +628,7 @@
                 <i class="fas fa-book"></i>
                 <span>Courses</span>
             </a>
-            <a href="admins.html" class="nav-item">
+            <a href="addAdmin.html" class="nav-item">
                 <i class="fas fa-user-shield"></i>
                 <span>Admins</span>
             </a>
@@ -649,62 +649,15 @@
         <div class="header">
             <h1><i class="fas fa-user-graduate"></i> Student Management</h1>
             <div class="user-menu">
-                <button class="action-btn" id="addAdminBtn">
+                <!-- <button class="action-btn" id="addAdminBtn">
                     <i class="fas fa-user-plus"></i> Add Admin
-                </button>
+                </button> -->
             </div>
         </div>
 
         <!-- Dashboard Cards -->
         <div class="card-container">
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">Total Students</div>
-                        <div class="card-value">152</div>
-                    </div>
-                    <div class="card-icon students">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">Pending Requests</div>
-                        <div class="card-value">12</div>
-                    </div>
-                    <div class="card-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">Approved</div>
-                        <div class="card-value">125</div>
-                    </div>
-                    <div class="card-icon approved">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">Rejected</div>
-                        <div class="card-value">15</div>
-                    </div>
-                    <div class="card-icon rejected">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+             </div>
 
         <!-- Student Data Table -->
         <div class="data-section">
@@ -720,7 +673,7 @@
                     <option value="Rejected">Rejected</option>
                 </select>
                 <button class="action-btn" id="addStudentBtn">
-                    <i class="fas fa-plus"></i> Add Student
+                    <i class="fas fa-user-plus"></i> Add Student
                 </button>
             </div>
         </div>
@@ -732,7 +685,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Course</th>
-                        <th>Age</th>
+                        <th>Campus</th>
                         <th>Gender</th>
                         <th>Roll #</th>
                         <th>Status</th>
@@ -752,147 +705,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="app.js">
-        // Initialize Supabase client (replace with your actual Supabase URL and key)
-        const SUPABASE_URL = 'https://your-project.supabase.co';
-        const SUPABASE_KEY = 'your-supabase-key';
-
-        // DOM elements
-        const dashboard = document.getElementById('showData');
-        const inputValue = document.getElementById('searchInput');
-        const statusFilter = document.getElementById('statusFilter');
-
-        // Sample data for dashboard cards
-        const array = [
-            {
-                title: "Total Students",
-                value: "152",
-                iconClass: "fas fa-users",
-                iconColor: "card-icon students"
-            },
-            {
-                title: "Pending Requests",
-                value: "12",
-                iconClass: "fas fa-clock",
-                iconColor: "card-icon pending"
-            },
-            {
-                title: "Approved",
-                value: "125",
-                iconClass: "fas fa-check-circle",
-                iconColor: "card-icon approved"
-            },
-            {
-                title: "Rejected",
-                value: "15",
-                iconClass: "fas fa-times-circle",
-                iconColor: "card-icon rejected"
-            }
-        ];
-
-        // ========================== Load Student Dashboard ==========================
-        async function showDashboard() {
-            // Load dashboard cards
-            let cardShow = document.querySelector(".card-container");
-            cardShow.innerHTML = '';
-
-            array.forEach((element) => {
-                cardShow.innerHTML += `<div class="card">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">${element.title}</div>
-                            <div class="card-value">${element.value}</div>
-                        </div>
-                        <div class="card-icon ${element.iconColor.split(' ')[1]}">
-                            <i class="${element.iconClass}"></i>
-                        </div>
-                    </div>
-                </div>`;
-            });
-
-            // In a real implementation, you would load data from Supabase here
-        }
-
-        // Call the function to show dashboard when page loads
-        document.addEventListener('DOMContentLoaded', showDashboard);
-
-        // ========================== Status Update ==========================
-        async function statusVa(statusValue, std_id) {
-            try {
-                // In a real implementation, you would update the status in Supabase
-                Swal.fire("Updated!", "Student status has been updated.", "success");
-            } catch (error) {
-                console.error("Error updating status:", error);
-                Swal.fire("Error", "Status update failed", "error");
-            }
-        }
-
-      
-        // ========================== Delete Student Function ==========================
-        function deleteStudent(studentId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        // In a real implementation, you would delete from Supabase here
-                        Swal.fire(
-                            'Deleted!',
-                            'Student has been deleted.',
-                            'success'
-                        );
-                    } catch (error) {
-                        console.error("Error deleting student:", error);
-                        Swal.fire("Error", "Failed to delete student.", "error");
-                    }
-                }
-            });
-        }
-
-        // ========================== Add Admin Button Handler ==========================
-        document.getElementById('addAdminBtn').addEventListener('click', function () {
-            Swal.fire({
-                title: 'Add New Admin',
-                html: `
-                    <input type="text" id="adminName" class="swal2-input" placeholder="Full Name">
-                    <input type="email" id="adminEmail" class="swal2-input" placeholder="Email">
-                    <input type="password" id="adminPassword" class="swal2-input" placeholder="Password">
-                `,
-                confirmButtonText: 'Add Admin',
-                focusConfirm: false,
-                preConfirm: () => {
-                    return {
-                        name: document.getElementById('adminName').value,
-                        email: document.getElementById('adminEmail').value,
-                        password: document.getElementById('adminPassword').value
-                    }
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Admin Added!',
-                        'New admin has been added successfully.',
-                        'success'
-                    );
-                }
-            });
-        });
-
-        // ========================== Add Student Button Handler ==========================
-        document.getElementById('addStudentBtn').addEventListener('click', function () {
-            Swal.fire({
-                title: 'Add New Student',
-                text: 'This would open a form to add a new student',
-                icon: 'info',
-                confirmButtonText: 'OK'
-            });
-        });
+    <script type="module" src="app.js">
+        
     </script>
 </body>
 
