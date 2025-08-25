@@ -415,11 +415,11 @@
                 <i class="fas fa-users"></i>
                 <span>Students</span>
             </a>
-            <a href="teachers.html" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Teachers</span>
             </a>
-            <a href="courses.html" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-book"></i>
                 <span>Courses</span>
             </a>
@@ -427,7 +427,7 @@
                 <i class="fas fa-user-shield"></i>
                 <span>Admins</span>
             </a>
-            <a href="settings.html" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
@@ -528,9 +528,21 @@ const supabaseKey =
 
 const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-import { checkAuth } from "./app.js";  
+ async function checkAuth() {
+  const {
+    data: { session },
+  } = await client.auth.getSession();
 
+  const currentPage = window.location.pathname.split("/").pop();
+
+  if (!session && currentPage === "addAdmin.html") {
+    window.location.href = "admin.html";
+  }
+}
+const currentPage = window.location.pathname.split("/").pop();
+if (currentPage === "addAdmin.html"  || currentPage === "admin.html") {
   checkAuth();
+}
 
 // DOM Elements
 const adminForm = document.getElementById('adminForms');
@@ -542,8 +554,11 @@ let adminsTableShow = document.getElementById('adminsTableBody');
 function showLoader() { loader.classList.remove('hidden'); }
 function hideLoader() { loader.classList.add('hidden'); }
 
+
+
 // ========================== Add New Admin ==========================
 if(adminForm){
+ 
   adminForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -568,7 +583,9 @@ if(adminForm){
         email: email,
         password: password
       });
-      if(authError) throw authError;
+      if(authError) {
+      console.log(authError.message);
+      }
 
       const user = data.user;
 
@@ -595,6 +612,7 @@ if(adminForm){
 
 // ========================== Show Admins ==========================
 async function adminDashboard(){
+showLoader();
   const { data, error } = await client.from("campus_admins").select("*");
  
   if(error){ console.log(error.message); return; }
@@ -618,16 +636,22 @@ async function adminDashboard(){
       </tr>
     `;
   });
+hideLoader();
+  
 }
 adminDashboard();
 
 // ========================== Edit Admin ==========================
 async function editAdmin(adminId){
+showLoader();
+
   const { data: admin, error } = await client
     .from("campus_admins")
     .select("*")
     .eq("id", adminId)
     .single();
+
+hideLoader();
 
   if(error){ Swal.fire("Error", "Unable to fetch admin.", "error"); return; }
 
@@ -644,6 +668,7 @@ async function editAdmin(adminId){
         
       </select>
     `,
+    
     focusConfirm: false,
     showCancelButton: true,
     preConfirm: () => {
@@ -654,16 +679,22 @@ async function editAdmin(adminId){
       }
     }
   });
+  
 
   if(formValues){
+showLoader();
+  
     const { error: updateError } = await client
       .from("campus_admins")
       .update(formValues)
       .eq("id", adminId);
 
+hideLoader();
+
     if(updateError){
       Swal.fire("Error", updateError.message, "error");
     } else {
+    
       Swal.fire("Updated!", "Admin details updated successfully", "success");
       adminDashboard();
     }
@@ -672,6 +703,7 @@ async function editAdmin(adminId){
 
 // ========================== Delete Admin ==========================
 async function deleteAdmin(adminId){
+
   const result = await Swal.fire({
     title: 'Are you sure?',
     text: "This will permanently delete the admin!",
@@ -683,10 +715,14 @@ async function deleteAdmin(adminId){
   });
 
   if(result.isConfirmed){
+showLoader();
+  
     const { error } = await client.from("campus_admins").delete().eq("id", adminId);
     if(error){
       Swal.fire("Error", error.message, "error");
     } else {
+hideLoader();
+    
       Swal.fire("Deleted!", "Admin has been deleted.", "success");
       adminDashboard();
     }

@@ -453,7 +453,6 @@
             animation: spin 1s linear infinite;
         }
 
-
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -620,11 +619,11 @@
                 <i class="fas fa-users"></i>
                 <span>Students</span>
             </a>
-            <a href="teachers.html" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-chalkboard-teacher"></i>
                 <span>Teachers</span>
             </a>
-            <a href="courses.html" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-book"></i>
                 <span>Courses</span>
             </a>
@@ -632,7 +631,7 @@
                 <i class="fas fa-user-shield"></i>
                 <span>Admins</span>
             </a>
-            <a href="settings.html" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
@@ -699,13 +698,13 @@
         </div>
     </div>
 
-    <div id="loader" class="loader-overlay" style="display: none;">
+    <!-- Loader Overlay -->
+    <div class="loader-overlay hidden" id="loader">
         <div class="spinner"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script type="module" src="app.js">
+    <script src="app.js">
         
     </script>
 </body>

@@ -1,6 +1,6 @@
-const supabaseUrl = "https://blkxlczwjkjgdfixbide.supabase.co";
+const supabaseUrl = "https://enoclxtimybzrchssnjk.supabase.co";
 const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJsa3hsY3p3amtqZ2RmaXhiaWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MzA3NDcsImV4cCI6MjA2ODQwNjc0N30.z6vZxMuPTvTn7ShSexmSo9C5gGJpl4AvJCSBknIDOZc";
+      '   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVub2NseHRpbXlienJjaHNzbmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwMjg1NTAsImV4cCI6MjA3MTYwNDU1MH0.HWiL-SvBpi31_tGVhBpYG0VBOLIBjkRZXB5nCT926Mw';
 
 const client = supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -31,7 +31,6 @@ if (studentForm) {
 
   studentForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    showLoader();
 
     if (
       !full_name.value ||
@@ -43,10 +42,10 @@ if (studentForm) {
       !cnic.value ||
       !contact.value
     ) {
-      hideLoader();
       Swal.fire("Error", "Please fill all fields", "warning");
       return;
     }
+    showLoader();
 
     const { data: lastRoll, error: rollError } = await client
       .from("student_form")
@@ -78,6 +77,7 @@ if (studentForm) {
       console.log(error.message);
       Swal.fire("Error", "Failed to submit data", "error");
     } else {
+          
       Swal.fire("Success", "Data successfully submitted!", "success");
       // Reset fields
     }
@@ -86,15 +86,17 @@ if (studentForm) {
 
 // ========================== Admin Login ==========================
 if (adminLogin) {
+
   adminLogin.addEventListener("click", async (e) => {
     e.preventDefault();
-    showLoader();
 
     if (!adminEmail.value || !adminPassword.value) {
-      hideLoader();
+      // hideLoader();
       Swal.fire("Warning", "Please enter email and password", "warning");
       return;
     }
+
+    showLoader();
 
     const { data, error } = await client.auth.signInWithPassword({
       email: adminEmail.value,
@@ -104,8 +106,11 @@ if (adminLogin) {
     hideLoader();
 
     if (error) {
+    
       console.log(error.message);
+      
       Swal.fire("Error", "Invalid admin credentials", "error");
+      
     } else {
       Swal.fire("Success", "Admin successfully logged in", "success").then(
         () => {
@@ -120,12 +125,16 @@ if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
     showLoader();
     const { error } = await client.auth.signOut();
+
     hideLoader();
 
     if (error) {
+    
       Swal.fire("Error", error.message, "error");
     } else {
+    
       Swal.fire("Logged Out", "You have been logged out!", "success");
+      
       window.location.href = "admin.html";
     }
   });
@@ -139,18 +148,14 @@ function hideLoader() {
   loader.style.display = "none";
 }
 
-export async function checkAuth() {
+async function checkAuth() {
   const {
     data: { session },
   } = await client.auth.getSession();
 
   const currentPage = window.location.pathname.split("/").pop();
 
-  // agar session nahi hai aur page restricted hai → admin.html redirect
-  if (
-    !session &&
-    (currentPage === "dashboard.html" || currentPage === "addAdmin.html")
-  ) {
+  if (!session && currentPage === "dashboard.html") {
     window.location.href = "admin.html";
   }
 }
@@ -162,15 +167,18 @@ if (currentPage === "dashboard.html"  || currentPage === "admin.html") {
 
 async function stdTitileCard(status) {
   if (status) {
+  
     const { count, error } = await client
       .from("student_form")
       .select("*", { count: "exact" })
       .eq("status", status);
 
     if (error) {
+    
       Swal.fire("Error", error.message);
       return 0;
     }
+    
     return count;
   }
   const { count, error } = await client
@@ -182,11 +190,13 @@ async function stdTitileCard(status) {
     return 0;
   }
   return count;
+  
 }
 
 
 // =========================  dashboardCardStd ===================================
 async function dashboardCardStd() {
+
 
   let totalStd = await stdTitileCard();
   let pending = await stdTitileCard("Pending");
@@ -253,7 +263,8 @@ async function showDashboard() {
     console.log(error.message);
     return;
   }
-console.log(data)
+    hideLoader();
+  
   dashboard.innerHTML = ""; // clear old data
   data.forEach((element) => {
     dashboard.innerHTML += `
@@ -280,7 +291,7 @@ console.log(data)
                 })" title="Edit">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-delete" onclick="deleteStudent(${
+                <button class="btn-delete" onclick="delStudent(${
                   element.id
                 })" title="Delete">
                     <i class="fas fa-trash"></i>
@@ -290,17 +301,23 @@ console.log(data)
     </tr>
               `;
   });
+  
 }
 showDashboard();
 
 // ========================== Edit Student Function ==========================
 async function editStudent(studentId) {
   // Get student data from DB
+  
+    showLoader();
+  
   const { data, error } = await client
     .from("student_form")
     .select("*")
     .eq("id", studentId)
     .single();
+
+    hideLoader();
 
   if (error) {
     Swal.fire("Error", "Unable to fetch student data.", "error");
@@ -308,11 +325,16 @@ async function editStudent(studentId) {
   }
 
   // ========================== Delete Student Function ==========================
-async function deleteStudent(studentId) {
+async function delStudent(studentId) {
+    showLoader();
+  
   const response = await client
     .from("student_form")
     .delete()
     .eq("id", studentId);
+
+    hideLoader();
+    
 
   Swal.fire("Student has been Deleted");
 
@@ -673,6 +695,171 @@ if (checkBtn) {
   });
 });
 }
+
+
+
+
+
+
+
+
+// // ==================== Campuses Admin ===============================
+
+
+// async function stdTitileCard(status) {
+//   if (status) {
+  
+//     const { count, error } = await client
+//       .from("student_form")
+//       .select("*", { count: "exact" })
+//       .eq("status", status);
+
+//     if (error) {
+    
+//       Swal.fire("Error", error.message);
+//       return 0;
+//     }
+    
+//     return count;
+//   }
+//   const { count, error } = await client
+//     .from("student_form")
+//     .select("*", { count: "exact" });
+
+//   if (error) {
+//     Swal.fire("Error", error.message);
+//     return 0;
+//   }
+//   return count;
+  
+// }
+
+
+
+
+
+
+
+
+// // =========================  dashboardCardStd ===================================
+// async function dashboardCardStd() {
+
+
+//   let totalStd = await stdTitileCard();
+//   let pending = await stdTitileCard("Pending");
+//   let approved = await stdTitileCard("Approved");
+//   let rejected = await stdTitileCard("Rejected");
+
+
+//   let arrayStd = [
+//     {
+//       title: "Total Students",
+//       value: totalStd,
+//       iconClass: "fas fa-users",
+//       iconColor: "card-icon students",
+//     },
+//     {
+//       title: "Pending Request",
+//       value: pending,
+//       iconClass: "fas fa-clock",
+//       iconColor: "card-icon pending",
+//     },
+//     {
+//       title: "Approved",
+//       value: approved,
+//       iconClass: "fas fa-check",
+//       iconColor: "card-icon approved",
+//     },
+
+//     {
+//       title: "Rejected",
+//       value: rejected,
+//       iconClass: "fas fa-times-circle",
+//       iconColor: "card-icon rejected",
+//     },
+//   ];
+
+//   // ============ Load Student Dashboard ========
+//   if (!dashboard) return;
+
+//   let cardShow = document.querySelector(".card-container");
+//   cardShow.innerHTML = "";
+
+//   arrayStd.forEach((element) => {
+//     cardShow.innerHTML += `<div class="card">
+//                 <div class="card-header">
+//                     <div>
+//                         <div class="card-title">${element.title}</div>
+//                         <div class="card-value">${element.value}</div>
+//                     </div>
+//                     <div class="${element.iconColor}">
+//                         <i class="${element.iconClass}"></i>
+//                     </div>
+//                 </div>
+//             </div> `;
+//   });
+
+//   }
+
+// async function showDashboard() {
+
+//  let  dashboardCard = await dashboardCardStd();
+//    const {
+//     data: { session },
+//   } = await client.auth.getSession();
+
+//   let adminCampus = session.user.email
+// console.log(adminCampus)
+
+//   const { data, error } = await client.from("student_form").select("*").eq('campuses')
+//   if (error) {
+//     console.log(error.message);
+//     return;
+//   }
+//     hideLoader();
+  
+//   dashboard.innerHTML = ""; // clear old data
+//   data.forEach((element) => {
+//     dashboard.innerHTML += `
+//                   <tr>
+//         <td>${element.full_name}</td>
+//         <td>${element.email}</td>
+//         <td>${element.courses}</td>
+//         <td>${element.campuses}</td>
+//         <td>${element.gender}</td>
+//         <td>${element.roll_num}</td>
+
+//         <td>
+//             <select onchange="statusVa(this.value, ${element.id})">
+//                 <option disabled selected>${element.status || "Select"}</option>
+//                 <option>Pending</option>
+//                 <option>Approved</option>
+//                 <option>Rejected</option>
+//             </select>
+//         </td>
+//         <td>
+//             <div class="action-buttons">
+//                 <button class="btn-edit" onclick="editStudent(${
+//                   element.id
+//                 })" title="Edit">
+//                     <i class="fas fa-edit"></i>
+//                 </button>
+//                 <button class="btn-delete" onclick="delStudent(${
+//                   element.id
+//                 })" title="Delete">
+//                     <i class="fas fa-trash"></i>
+//                 </button>
+//             </div>
+//         </td>
+//     </tr>
+//               `;
+//   });
+  
+// }
+// showDashboard();
+
+
+
 // // Theme Toggle
 // const themeToggle = document.getElementById('theme-toggle');
 // if(themeToggle){
